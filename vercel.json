@@ -1,9 +1,9 @@
 {
   "rewrites": [
-    { "source": "/api/bet7k-proxy", "destination": "/api/bet7k-proxy.js" }
+    { "source": "/api/bet7k-proxy", "destination": "/bet7k-proxy.js" }
   ],
   "functions": {
-    "api/**/*.js": {
+    "bet7k-proxy.js": {
       "runtime": "nodejs18.x"
     }
   }

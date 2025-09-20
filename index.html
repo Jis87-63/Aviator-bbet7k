@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>✈️ Aviator Bet7K - Histórico Real</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2965/2965339.png" type="image/png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      color: #fff;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      background: linear-gradient(to right, #ff9a00, #ff5252);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+
+    .status {
+      text-align: center;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      margin-bottom: 25px;
+      font-size: 1.1rem;
+    }
+
+    .history-title {
+      font-size: 1.3rem;
+      margin: 25px 0 15px;
+      color: #ff9a00;
+      font-weight: 600;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .round {
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-align: center;
+      animation: slideIn 0.4s ease forwards;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      background: linear-gradient(135deg, #2c2c3a, #1e1e2a);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .round::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+    }
+
+    .round.high::before { background: linear-gradient(to right, #ff5252, #ff9a00); }
+    .round.medium::before { background: linear-gradient(to right, #ffeb3b, #ffc107); }
+    .round.low::before { background: linear-gradient(to right, #64ffda, #00e5ff); }
+
+    .round.high { color: #ff5252; }
+    .round.medium { color: #ffc107; }
+    .round.low { color: #64ffda; }
+
+    .timestamp {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-top: 5px;
+      font-weight: 400;
+    }
+
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.8rem;
+      opacity: 0.7;
+      line-height: 1.5;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      font-size: 1.1rem;
+      color: #aaa;
+    }
+
+    .new {
+      animation: pulse 0.6s ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        margin: 10px;
+        padding: 20px 15px;
+      }
+      h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>✈️ Aviator Bet7K</h1>
+    <div class="status" id="status">Conectando à API real...</div>
+    <div class="history-title">📜 Histórico de Rodadas</div>
+    <div class="history-list" id="history"></div>
+    <div class="footer">
+      ⚠️ Dados reais da API Bet7K.<br>
+      Atualização a cada 8s.<br>
+      Jogue com responsabilidade.
+    </div>
+  </div>
+
+  <script>
+    // 🔁 URL DO PROXY (Vercel Serverless Function)
+    const API_URL = '/api/bet7k-proxy'; // ← Isso vai apontar para sua função serverless
+
+    const MAX_HISTORY = 20;
+    const historyContainer = document.getElementById('history');
+    const statusElement = document.getElementById('status');
+
+    let history = JSON.parse(localStorage.getItem('aviatorHistory') || '[]');
+
+    function renderHistory() {
+      historyContainer.innerHTML = '';
+      if (history.length === 0) {
+        historyContainer.innerHTML = '<div class="loading">Aguardando primeiros resultados...</div>';
+        return;
+      }
+      history.slice().reverse().forEach(item => {
+        const roundDiv = document.createElement('div');
+        roundDiv.classList.add('round');
+        if (item.crash_point >= 5) roundDiv.classList.add('high');
+        else if (item.crash_point >= 2) roundDiv.classList.add('medium');
+        else roundDiv.classList.add('low');
+
+        const formattedTime = new Date(item.timestamp).toLocaleTimeString('pt-BR');
+        roundDiv.innerHTML = `
+          <div>${item.crash_point.toFixed(2)}x</div>
+          <div class="timestamp">#${item.game_id} • ${formattedTime}</div>
+        `;
+        historyContainer.appendChild(roundDiv);
+      });
+    }
+
+    async function fetchLatestRound() {
+      try {
+        statusElement.textContent = "Atualizando...";
+        statusElement.style.color = "#64ffda";
+
+        const response = await fetch(API_URL);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+
+        if (!data.crash_point || !data.game_id) {
+          throw new Error("Dados inválidos da API");
+        }
+
+        const exists = history.some(item => item.game_id === data.game_id);
+        if (!exists) {
+          const newRound = {
+            crash_point: parseFloat(data.crash_point),
+            game_id: data.game_id,
+            timestamp: data.timestamp || new Date().toISOString()
+          };
+
+          history.unshift(newRound);
+          if (history.length > MAX_HISTORY) history.pop();
+          localStorage.setItem('aviatorHistory', JSON.stringify(history));
+          renderHistory();
+
+          setTimeout(() => {
+            const firstItem = historyContainer.firstChild;
+            if (firstItem) firstItem.classList.add('new');
+          }, 100);
+        }
+
+        statusElement.textContent = `✅ ${data.crash_point}x • Atualizado!`;
+        statusElement.style.color = "#fff";
+
+      } catch (error) {
+        console.error("Erro:", error);
+        statusElement.textContent = "❌ Falha na conexão com API";
+        statusElement.style.color = "#ff5252";
+      }
+    }
+
+    renderHistory();
+    fetchLatestRound();
+    setInterval(fetchLatestRound, 8000); // atualiza a cada 8 segundos
+  </script>
+</body>
+</html>
